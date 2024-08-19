@@ -64,24 +64,24 @@ def print_hotel_details(hotel_info):
         with st.expander("Xem thêm"):
             st.write(hotel_info['Hotel_Description'])
 
-# Load mô hình SVD đã lưu
-with open('svd_model.pkl', 'rb') as f:
-    svd_model = pickle.load(f)
+# # Load mô hình SVD đã lưu
+# with open('svd_model.pkl', 'rb') as f:
+#     svd_model = pickle.load(f)
 
-# Hàm gợi ý khách sạn dựa trên người dùng
-def recommend_hotels(user_id, num_recommendations=5):
-    all_hotels = df_hotel_info['Hotel_ID'].unique()
-    rated_hotels = df_hotel_comments[df_hotel_comments['Reviewer ID'] == user_id]['Hotel ID'].unique()
-    unrated_hotels = [hotel for hotel in all_hotels if hotel not in rated_hotels]
+# # Hàm gợi ý khách sạn dựa trên người dùng
+# def recommend_hotels(user_id, num_recommendations=5):
+#     all_hotels = df_hotel_info['Hotel_ID'].unique()
+#     rated_hotels = df_hotel_comments[df_hotel_comments['Reviewer ID'] == user_id]['Hotel ID'].unique()
+#     unrated_hotels = [hotel for hotel in all_hotels if hotel not in rated_hotels]
 
-    predictions = [svd_model.predict(user_id, hotel).est for hotel in unrated_hotels]
-    recommendations = pd.DataFrame({
-        'Hotel_ID': unrated_hotels,
-        'Predicted_Score': predictions
-    })
+#     predictions = [svd_model.predict(user_id, hotel).est for hotel in unrated_hotels]
+#     recommendations = pd.DataFrame({
+#         'Hotel_ID': unrated_hotels,
+#         'Predicted_Score': predictions
+#     })
 
-    top_recommendations = recommendations.sort_values(by='Predicted_Score', ascending=False).head(num_recommendations)
-    return df_hotel_info[df_hotel_info['Hotel_ID'].isin(top_recommendations['Hotel_ID'])][['Hotel_ID', 'Hotel_Name', 'Hotel_Rank', 'Hotel_Address', 'Total_Score']]
+#     top_recommendations = recommendations.sort_values(by='Predicted_Score', ascending=False).head(num_recommendations)
+#     return df_hotel_info[df_hotel_info['Hotel_ID'].isin(top_recommendations['Hotel_ID'])][['Hotel_ID', 'Hotel_Name', 'Hotel_Rank', 'Hotel_Address', 'Total_Score']]
 
 #################################################################
 # Thêm tiêu đề vào sidebar
