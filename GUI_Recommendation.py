@@ -64,9 +64,9 @@ def print_hotel_details(hotel_info):
         with st.expander("Xem thêm"):
             st.write(hotel_info['Hotel_Description'])
 
-# Load mô hình SVD đã lưu
-with open('svd_model.pkl', 'rb') as f:
-    svd_model = pickle.load(f)
+# # Load mô hình SVD đã lưu
+# with open('svd_model.pkl', 'rb') as f:
+#     svd_model = pickle.load(f)
 
 # Hàm gợi ý khách sạn dựa trên người dùng
 def recommend_hotels(user_id, num_recommendations=5):
