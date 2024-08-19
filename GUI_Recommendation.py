@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import pyspark
-from pyspark.sql.functions import *
 
 from st_aggrid import AgGrid, GridOptionsBuilder
 import pickle
