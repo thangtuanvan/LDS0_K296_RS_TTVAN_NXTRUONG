@@ -3,4 +3,4 @@ pandas
 matplotlib
 seaborn
 streamlit-aggrid
-surprise
+scikit-surprise
