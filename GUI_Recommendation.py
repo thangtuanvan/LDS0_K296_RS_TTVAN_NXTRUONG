@@ -7,6 +7,13 @@ import seaborn as sns
 from st_aggrid import AgGrid, GridOptionsBuilder
 import pickle
 
+# cimport numpy
+np.import_array()
+
+# Ensure that the numpy C-API is initialized
+def initialize():
+    np.import_array()
+
 # load dữ liệu
 df_hotel_comments = pd.read_csv('data/hotel_comments_cleaned.csv')
 df_hotel_info     = pd.read_csv('data/hotel_info_cleaned.csv')
