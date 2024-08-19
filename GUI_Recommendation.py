@@ -168,37 +168,37 @@ elif choice == "Collaborative Filtering":
         placeholder="Ví dụ: 1_1_1",
     )
 
-    if user_option:
-        user_id = user_option.split('\t')[0]  # Tách lấy User ID
+    # if user_option:
+    #     user_id = user_option.split('\t')[0]  # Tách lấy User ID
 
-        st.write('#### Các khách sạn gợi ý cho người dùng:')
-        recommendations = recommend_hotels(user_id)
-        st.dataframe(recommendations)
+    #     st.write('#### Các khách sạn gợi ý cho người dùng:')
+    #     recommendations = recommend_hotels(user_id)
+    #     st.dataframe(recommendations)
 
-        if not recommendations.empty:
-            # Chọn ID khách sạn với phần gợi ý
-            hotel_id_selection = st.selectbox(
-                "Chọn ID khách sạn để xem chi tiết",
-                recommendations['Hotel_ID'],
-                placeholder="Chọn một khách sạn"
-            )
+    #     if not recommendations.empty:
+    #         # Chọn ID khách sạn với phần gợi ý
+    #         hotel_id_selection = st.selectbox(
+    #             "Chọn ID khách sạn để xem chi tiết",
+    #             recommendations['Hotel_ID'],
+    #             placeholder="Chọn một khách sạn"
+    #         )
             
-            # Lấy thông tin khách sạn
-            selected_hotel = df_hotel_info[df_hotel_info['Hotel_ID'] == hotel_id_selection].iloc[0]
-            st.write(f"Hotel Name: {selected_hotel['Hotel_Name']}")
-            st.write(f"Hotel Rank: {selected_hotel['Hotel_Rank']}")
-            st.write(f"Address: {selected_hotel['Hotel_Address']}")
-            st.write(f"Total Score: {selected_hotel['Total_Score']}")
+    #         # Lấy thông tin khách sạn
+    #         selected_hotel = df_hotel_info[df_hotel_info['Hotel_ID'] == hotel_id_selection].iloc[0]
+    #         st.write(f"Hotel Name: {selected_hotel['Hotel_Name']}")
+    #         st.write(f"Hotel Rank: {selected_hotel['Hotel_Rank']}")
+    #         st.write(f"Address: {selected_hotel['Hotel_Address']}")
+    #         st.write(f"Total Score: {selected_hotel['Total_Score']}")
             
-            description = selected_hotel['Hotel_Description']
+    #         description = selected_hotel['Hotel_Description']
             
-            # Giới hạn mô tả xuống còn 500 từ
-            limited_description = " ".join(description.split()[:500])
+    #         # Giới hạn mô tả xuống còn 500 từ
+    #         limited_description = " ".join(description.split()[:500])
             
-            # Hiển thị mô tả với giới hạn 500 từ
-            if limited_description:
-                st.write("Hotel Description:")
-                with st.expander("Xem thêm"):
-                    st.write(limited_description + "...")
-            else:
-                st.write("Không có mô tả cho khách sạn này.")
+    #         # Hiển thị mô tả với giới hạn 500 từ
+    #         if limited_description:
+    #             st.write("Hotel Description:")
+    #             with st.expander("Xem thêm"):
+    #                 st.write(limited_description + "...")
+    #         else:
+    #             st.write("Không có mô tả cho khách sạn này.")
