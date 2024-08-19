@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pyspark
+from pyspark.sql.functions import *
 
 from st_aggrid import AgGrid, GridOptionsBuilder
 import pickle
@@ -63,6 +65,25 @@ def print_hotel_details(hotel_info):
         # Hiển thị văn bản rút gọn với st.expander
         with st.expander("Xem thêm"):
             st.write(hotel_info['Hotel_Description'])
+
+# Load mô hình SVD đã lưu
+with open('svd_model.pkl', 'rb') as f:
+    svd_model = pickle.load(f)
+
+# Hàm gợi ý khách sạn dựa trên người dùng
+def recommend_hotels(user_id, num_recommendations=5):
+    all_hotels = df_hotel_info['Hotel_ID'].unique()
+    rated_hotels = df_hotel_comments[df_hotel_comments['Reviewer ID'] == user_id]['Hotel ID'].unique()
+    unrated_hotels = [hotel for hotel in all_hotels if hotel not in rated_hotels]
+
+    predictions = [svd_model.predict(user_id, hotel).est for hotel in unrated_hotels]
+    recommendations = pd.DataFrame({
+        'Hotel_ID': unrated_hotels,
+        'Predicted_Score': predictions
+    })
+
+    top_recommendations = recommendations.sort_values(by='Predicted_Score', ascending=False).head(num_recommendations)
+    return df_hotel_info[df_hotel_info['Hotel_ID'].isin(top_recommendations['Hotel_ID'])][['Hotel_ID', 'Hotel_Name', 'Hotel_Rank', 'Hotel_Address', 'Total_Score']]
 
 #################################################################
 # Thêm tiêu đề vào sidebar
@@ -140,3 +161,46 @@ if choice == 'Content Based':
 
 elif choice == "Collaborative Filtering":
     st.subheader("Collaborative Filtering")
+
+    # Chọn người dùng - Multiselect
+    user_option = st.selectbox(
+        "Chọn ID người dùng",
+        df_hotel_comments['Reviewer ID'].unique(),
+        index=None,
+        placeholder="Ví dụ: 1_1_1",
+    )
+
+    if user_option:
+        user_id = user_option.split('\t')[0]  # Tách lấy User ID
+
+        st.write('#### Các khách sạn gợi ý cho người dùng:')
+        recommendations = recommend_hotels(user_id)
+        st.dataframe(recommendations)
+
+        if not recommendations.empty:
+            # Chọn ID khách sạn với phần gợi ý
+            hotel_id_selection = st.selectbox(
+                "Chọn ID khách sạn để xem chi tiết",
+                recommendations['Hotel_ID'],
+                placeholder="Chọn một khách sạn"
+            )
+            
+            # Lấy thông tin khách sạn
+            selected_hotel = df_hotel_info[df_hotel_info['Hotel_ID'] == hotel_id_selection].iloc[0]
+            st.write(f"Hotel Name: {selected_hotel['Hotel_Name']}")
+            st.write(f"Hotel Rank: {selected_hotel['Hotel_Rank']}")
+            st.write(f"Address: {selected_hotel['Hotel_Address']}")
+            st.write(f"Total Score: {selected_hotel['Total_Score']}")
+            
+            description = selected_hotel['Hotel_Description']
+            
+            # Giới hạn mô tả xuống còn 500 từ
+            limited_description = " ".join(description.split()[:500])
+            
+            # Hiển thị mô tả với giới hạn 500 từ
+            if limited_description:
+                st.write("Hotel Description:")
+                with st.expander("Xem thêm"):
+                    st.write(limited_description + "...")
+            else:
+                st.write("Không có mô tả cho khách sạn này.")
