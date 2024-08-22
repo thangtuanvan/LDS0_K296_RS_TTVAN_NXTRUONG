@@ -1,8 +1,0 @@
-cython
-pandas
-numpy
-matplotlib
-seaborn
-streamlit
-streamlit-aggrid
-scikit-surprise
